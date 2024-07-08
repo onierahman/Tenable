@@ -11,8 +11,28 @@ Step-by-Step Guide for Central Deployment of Nessus Agents on Linux
 **  Create a Deployment Script:  **
 
 Write a script to automate the installation and initial configuration of the Nessus agent. Below is an example of a simple deployment script for RPM-based distributions like CentOS, RHEL, or Fedora. Modify this script for your specific environment and requirements.
+````
+#!/bin/bash
 
-https://github.com/onierahman/Tenable/blob/main/NA_Deployment_Script.bash 
+# Variables
+NESSUS_AGENT_PACKAGE="NessusAgent-<version>.rpm"
+NESSUS_MANAGER_HOSTNAME="your-nessus-manager.yourdomain.com"
+ACTIVATION_CODE="your-activation-code"
+
+# Install Nessus Agent
+sudo rpm -ivh $NESSUS_AGENT_PACKAGE
+
+# Start and Enable Nessus Agent Service
+sudo systemctl start nessusagent
+sudo systemctl enable nessusagent
+
+# Link the Agent to the Nessus Manager or Tenable.io
+sudo /opt/nessus_agent/sbin/nessuscli agent link --key=$ACTIVATION_CODE --host=$NESSUS_MANAGER_HOSTNAME --port=8834
+
+# Confirm the Agent is Linked
+sudo /opt/nessus_agent/sbin/nessuscli agent status
+````
+
 
 For Debian-based distributions like Ubuntu, use the .deb package and dpkg command instead of rpm.
 
@@ -22,7 +42,35 @@ Distribute the script and the Nessus agent installation package to the target Li
 Execute the Deployment Script Remotely:
 
 Use SSH or a configuration management tool like Ansible to execute the script on all target machines. For example, using Ansible:
-https://github.com/onierahman/Tenable/blob/main/Ansible_Playbook.yaml
+
+````
+---
+- name: Deploy Nessus Agents
+  hosts: linux_machines
+  become: yes
+  tasks:
+    - name: Install Nessus Agent RPM
+      yum:
+        name: /path/to/NessusAgent-<version>.rpm
+        state: present
+
+    - name: Start Nessus Agent Service
+      systemd:
+        name: nessusagent
+        state: started
+        enabled: yes
+
+    - name: Link Nessus Agent to Manager
+      command: /opt/nessus_agent/sbin/nessuscli agent link --key=your-activation-code --host=your-nessus-manager.yourdomain.com --port=8834
+
+    - name: Verify Nessus Agent Status
+      command: /opt/nessus_agent/sbin/nessuscli agent status
+      register: agent_status
+
+    - name: Output Agent Status
+      debug:
+        msg: "{{ agent_status.stdout_lines }}"
+````
 
 **Verify Agent Deployment:**
 
