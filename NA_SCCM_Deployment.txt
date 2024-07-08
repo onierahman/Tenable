@@ -1,0 +1,9 @@
+Before you start
+Please complete the following prerequisite steps:
+
+Download the x86 or x64 Nessus Agent Windows package here.
+  Log in to Tenable.io or Nessus Manager.
+  Click on Scans.
+  Click on Agents.
+  Create the appropriate Agent groups for the agents (e.g. Windows Group 1).
+  Copy the Agent Linking key and keep it available for the following steps.
