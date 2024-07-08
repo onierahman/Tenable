@@ -1,0 +1,26 @@
+---
+- name: Deploy Nessus Agents
+  hosts: linux_machines
+  become: yes
+  tasks:
+    - name: Install Nessus Agent RPM
+      yum:
+        name: /path/to/NessusAgent-<version>.rpm
+        state: present
+
+    - name: Start Nessus Agent Service
+      systemd:
+        name: nessusagent
+        state: started
+        enabled: yes
+
+    - name: Link Nessus Agent to Manager
+      command: /opt/nessus_agent/sbin/nessuscli agent link --key=your-activation-code --host=your-nessus-manager.yourdomain.com --port=8834
+
+    - name: Verify Nessus Agent Status
+      command: /opt/nessus_agent/sbin/nessuscli agent status
+      register: agent_status
+
+    - name: Output Agent Status
+      debug:
+        msg: "{{ agent_status.stdout_lines }}"
