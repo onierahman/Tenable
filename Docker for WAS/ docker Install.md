@@ -1,3 +1,4 @@
+![tenable-generic](https://github.com/onierahman/Tenable/assets/40553057/e13e9fb1-f852-495b-b28b-918a0400c5ab)
 # Install Docker on Linux (AlmaLinux)
 
 **Prerequisites:**
