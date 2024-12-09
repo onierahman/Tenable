@@ -1,4 +1,4 @@
-**Install Docker on Linux (AlmaLinux)**
+# Install Docker on Linux (AlmaLinux)
 
 **Prerequisites:**
   Operating system and version: AlmaLinux OS 8.
